@@ -5,7 +5,7 @@ const app = express();
 app.use(bodyParser.json());
 const PAGE_ACCESS_TOKEN = "EAAZCZCaypH4lgBPR02uElfysWm8i9Ip9cAfZCZBfYMLKQGU6nsobQPoRcE4NZC9tOQ5uQcIpHDi7yH9EeT7J2yM9WDj1m4o4pT4bxBEO5b0mPIQx1vkZCN13LkpUKgWZCjq6DLxB8psVlJ3TDiVLxZBjAJA4NjAVZBZCxlA0veZBUPGe9yO1Nj6ShPnE95JpgnTULmcnX3nlLHuKQZDZD";
 app.get("/", (req,res)=> {
-  res.render("Hello World");
+  res.status(200).send("Hello World");
 })
 app.get("/webhook", (req,res) => {
     let VERIFY_TOKEN = "SaiRam123";
