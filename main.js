@@ -8,7 +8,7 @@ app.get("/", (req,res)=> {
   res.status(200).send("Hello World");
 })
 app.get("/webhook", (req,res) => {
-  console.log(req,query);
+  console.log(req.query);
     let VERIFY_TOKEN = "SaiRam123";
     let mode = req.query["hub.mode"];
     let token = req.query["hub.verify_token"];
