@@ -78,4 +78,4 @@ function callSendAPI(sender_psid, response) {
   );
 }
 
-app.listen(3000, () => console.log("Webhook is listening on port 3000"));
+module.exports = app;
