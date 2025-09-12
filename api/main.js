@@ -4,10 +4,11 @@ const request = require("request");
 const app = express();
 app.use(bodyParser.json());
 const PAGE_ACCESS_TOKEN = "EAAP9pnZCrJZBYBPVkZCq1lK46pyc6yLQp80VfeqFYNJhUNI33N11WQUvrV0o9ZAhGs9LUTPGAj0Gdr60BaAPdeFcohJRER5Cmhwxyz1YKY0nIfvlpqLfbYAlbNqrZCAXgykzthaOxo4WgRoZAlmCYamFpoUfHzlVZBQm4REtZBB0KuzHZCfZCVh77D0gfNYqnHSRkH3NuGvL27LAZDZD";
-app.get("/", (req,res)=> {
+const defaultRoute = "/api/main"
+app.get(`${defaultRoute}/`, (req,res)=> {
   res.status(200).send("Hello World");
 })
-app.get("/webhook", (req,res) => {
+app.get(`${defaultRoute}/webhook`, (req,res) => {
   console.log(req.query);
     let VERIFY_TOKEN = "SaiRam123";
     let mode = req.query["hub.mode"];
@@ -24,7 +25,7 @@ app.get("/webhook", (req,res) => {
 
 });
 
-app.post("/webhook", (req, res) => {
+app.post(`${defaultRoute}/webhook`, (req, res) => {
   console.log(req.body);
   let body = req.body;
 
