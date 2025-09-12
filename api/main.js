@@ -78,4 +78,4 @@ function callSendAPI(sender_psid, response) {
   );
 }
 
-module.exports = app;
+module.exports = (req,res) => {app(req,res)};
