@@ -4,7 +4,7 @@
 // const cohere = new CohereClient({ token: process.env.COHERE_API_KEY });
 // message = `what is 234-345+34534`;
 // const storeInfo = `
-// We are Desi Mexicana Kitchen. 
+// We are Desi Mexicana Kitchen.
 // We sell:
 // - Tacos (veg & chicken)
 // - Burritos
@@ -16,10 +16,6 @@
 
 const { request } = require("express");
 
-
-
-
-
 // const asyncFunction = async () => {
 // //   const response = await cohere.chat({
 // //     model: "command-r-plus-08-2024",
@@ -27,7 +23,7 @@ const { request } = require("express");
 // //   });
 // const response = await cohere.chat({
 //   model: "command-r-plus-08-2024",
-//   message: `Answer based only on this store info: ${storeInfo}. 
+//   message: `Answer based only on this store info: ${storeInfo}.
 //   Question: What drinks do you have?`,
 // });
 
@@ -38,20 +34,19 @@ const { request } = require("express");
 
 const express = require("express");
 const bodyParser = require("body-parser");
+const { createServer } = require("http");
+
 const app = express();
 app.use(bodyParser.json());
 
-app.get("/", (req,res) => {
-  res.send("Hello from Vercel API.")
-})
+app.get("/", (req, res) => {
+  res.send("Hello from Vercel API.");
+});
 
-
-module.exports = app
-
-
-
-
-
+module.exports = (res, res) => {
+  const server = createServer(app);
+  server.emit("request", req, res);
+};
 
 // app.get("/", (req,res) => {
 //   res.send("Hello World!");
