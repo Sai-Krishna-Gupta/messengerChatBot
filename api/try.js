@@ -38,23 +38,26 @@ const { request } = require("express");
 
 
 
+module.exports = (req, res) => {
+  res.status(200).send("Hello from Vercel API!");
+};
 
 
 
 
-const express = require("express");
-const bodyParser = require("body-parser");
-const app = express();
-app.use(bodyParser.json());
+// const express = require("express");
+// const bodyParser = require("body-parser");
+// const app = express();
+// app.use(bodyParser.json());
 
-app.get("/", (req,res) => {
-  res.send("Hello World!");
-})
-app.get("/secondRoute", (req,res) => {
-  res.send("Second Route works");
-})
-app.post("/secondRoute", (req,res) => {
-  req.send("Route works for posting also.")
-})
+// app.get("/", (req,res) => {
+//   res.send("Hello World!");
+// })
+// app.get("/secondRoute", (req,res) => {
+//   res.send("Second Route works");
+// })
+// app.post("/secondRoute", (req,res) => {
+//   req.send("Route works for posting also.")
+// })
 
-module.exports = ((req,res) => {app(req,res)});
+// module.exports = ((req,res) => {app(req,res)});
