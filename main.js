@@ -60,23 +60,30 @@ async function handleMessage(sender_psid, received_message) {
 }
 
 async function callSendAPI(sender_psid, response) {
-  let request_body = {
+  const request_body = {
     recipient: { id: sender_psid },
     message: response,
   };
 
-  try{
-    const res = await axios.post("https://graph.facebook.com/v17.0/me/messages",request_body,{
-      params: {access_token: PAGE_ACCESS_TOKEN},
-      headers: {"Content-Type": "application/json"},
-    });
-    console.log("Message Sent!", res.data);
-  } catch(err){
-if (err.response) {
-      console.error("Graph API error:", err.response.status, err.response.data);
+  try {
+    const res = await fetch(
+      `https://graph.facebook.com/v17.0/me/messages?access_token=${PAGE_ACCESS_TOKEN}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(request_body),
+      }
+    );
+
+    if (!res.ok) {
+      const errData = await res.json();
+      console.error("Graph API error:", res.status, errData);
     } else {
-      console.error("Axios error:", err.message);
+      const data = await res.json();
+      console.log("Message sent!", data);
     }
+  } catch (err) {
+    console.error("Fetch error:", err.message);
   }
 }
 
