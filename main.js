@@ -3,26 +3,27 @@ const bodyParser = require("body-parser");
 const request = require("request");
 const app = express();
 app.use(bodyParser.json());
-const PAGE_ACCESS_TOKEN = "EAAP9pnZCrJZBYBPVkZCq1lK46pyc6yLQp80VfeqFYNJhUNI33N11WQUvrV0o9ZAhGs9LUTPGAj0Gdr60BaAPdeFcohJRER5Cmhwxyz1YKY0nIfvlpqLfbYAlbNqrZCAXgykzthaOxo4WgRoZAlmCYamFpoUfHzlVZBQm4REtZBB0KuzHZCfZCVh77D0gfNYqnHSRkH3NuGvL27LAZDZD";
-const defaultRoute = "/api/main"
-app.get(`${defaultRoute}/`, (req,res)=> {
+app.set("port", process.env.PORT || 3000);
+const PAGE_ACCESS_TOKEN =
+  "EAAP9pnZCrJZBYBPVkZCq1lK46pyc6yLQp80VfeqFYNJhUNI33N11WQUvrV0o9ZAhGs9LUTPGAj0Gdr60BaAPdeFcohJRER5Cmhwxyz1YKY0nIfvlpqLfbYAlbNqrZCAXgykzthaOxo4WgRoZAlmCYamFpoUfHzlVZBQm4REtZBB0KuzHZCfZCVh77D0gfNYqnHSRkH3NuGvL27LAZDZD";
+const defaultRoute = "/api/main";
+app.get(`${defaultRoute}/`, (req, res) => {
   res.status(200).send("Hello World");
-})
-app.get(`${defaultRoute}/webhook`, (req,res) => {
+});
+app.get(`${defaultRoute}/webhook`, (req, res) => {
   console.log(req.query);
-    let VERIFY_TOKEN = "SaiRam123";
-    let mode = req.query["hub.mode"];
-    let token = req.query["hub.verify_token"];
-    let challenge = req.query["hub.challenge"];
-    if(mode &&token){
-        if (mode==="subscribe" &&token===VERIFY_TOKEN){
-            console.log("Webhook Verified");
-            res.status(200).send(challenge);
-        } else{
-            res.sendStatus(403);
-        }
+  let VERIFY_TOKEN = "SaiRam123";
+  let mode = req.query["hub.mode"];
+  let token = req.query["hub.verify_token"];
+  let challenge = req.query["hub.challenge"];
+  if (mode && token) {
+    if (mode === "subscribe" && token === VERIFY_TOKEN) {
+      console.log("Webhook Verified");
+      res.status(200).send(challenge);
+    } else {
+      res.sendStatus(403);
     }
-
+  }
 });
 
 app.post(`${defaultRoute}/webhook`, (req, res) => {
@@ -30,7 +31,7 @@ app.post(`${defaultRoute}/webhook`, (req, res) => {
   let body = req.body;
 
   if (body.object === "page") {
-    body.entry.forEach(function(entry) {
+    body.entry.forEach(function (entry) {
       let webhook_event = entry.messaging[0];
       let sender_psid = webhook_event.sender.id;
 
@@ -49,7 +50,7 @@ function handleMessage(sender_psid, received_message) {
 
   if (received_message.text) {
     response = {
-      text: `You sent: "${received_message.text}". Thanks for reaching out!`
+      text: `You sent: "${received_message.text}". Thanks for reaching out!`,
     };
   }
 
@@ -59,7 +60,7 @@ function handleMessage(sender_psid, received_message) {
 function callSendAPI(sender_psid, response) {
   let request_body = {
     recipient: { id: sender_psid },
-    message: response
+    message: response,
   };
 
   request(
@@ -67,7 +68,7 @@ function callSendAPI(sender_psid, response) {
       uri: "https://graph.facebook.com/v17.0/me/messages",
       qs: { access_token: PAGE_ACCESS_TOKEN },
       method: "POST",
-      json: request_body
+      json: request_body,
     },
     (err, res, body) => {
       if (!err) {
@@ -79,4 +80,6 @@ function callSendAPI(sender_psid, response) {
   );
 }
 
-module.exports = (req,res) => {app(req,res)};
+app.listen(app.get("port"), () => {
+  console.log(`Server is listening on ${app.get("port")}`);
+});
