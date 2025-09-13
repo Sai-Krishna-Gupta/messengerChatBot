@@ -1,16 +1,18 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const request = require("request");
+const dotenv = require("dotenv");
+dotenv.config();
 const app = express();
 app.use(bodyParser.json());
 app.set("port", process.env.PORT || 3000);
-const PAGE_ACCESS_TOKEN =
-  "EAAP9pnZCrJZBYBPVkZCq1lK46pyc6yLQp80VfeqFYNJhUNI33N11WQUvrV0o9ZAhGs9LUTPGAj0Gdr60BaAPdeFcohJRER5Cmhwxyz1YKY0nIfvlpqLfbYAlbNqrZCAXgykzthaOxo4WgRoZAlmCYamFpoUfHzlVZBQm4REtZBB0KuzHZCfZCVh77D0gfNYqnHSRkH3NuGvL27LAZDZD";
-const defaultRoute = "/api/main";
-app.get(`${defaultRoute}/`, (req, res) => {
+const PAGE_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN;
+console.log(process.env.VERIFY_TOKEN)
+  
+app.get(`/`, (req, res) => {
   res.status(200).send("Hello World");
 });
-app.get(`${defaultRoute}/webhook`, (req, res) => {
+app.get(`/webhook`, (req, res) => {
   console.log(req.query);
   let VERIFY_TOKEN = "SaiRam123";
   let mode = req.query["hub.mode"];
@@ -26,7 +28,7 @@ app.get(`${defaultRoute}/webhook`, (req, res) => {
   }
 });
 
-app.post(`${defaultRoute}/webhook`, (req, res) => {
+app.post(`/webhook`, (req, res) => {
   console.log(req.body);
   let body = req.body;
 
