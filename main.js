@@ -1,20 +1,33 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const axios = require("axios");
+const { CohereClient } = require("cohere-ai");
 const dotenv = require("dotenv");
-dotenv.config();
 const app = express();
 app.use(bodyParser.json());
 app.set("port", process.env.PORT || 3000);
+dotenv.config();
+const documents = [
+  {title: "Menu", snippet: JSON.stringify([
+    {item: "Veggie Mash Burger"},
+    {item: "Paneer Zinger Burger"},
+    {item: "Creamy grilled Sandwich"},
+    {item: "Coleslaw Sandwich"},
+    {item: "Quesadillas"},
+    {item: "Stuffed Kulcha"},
+    {item: "Desi Pancakes"}
+  ])},
+  {title: "Location", snippet: "Cobbs Pond Rotary Park"},
+  {title: "Hours", snippet: "10AM-2PM on September 27"}
+]
 const PAGE_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN;
-console.log(process.env.VERIFY_TOKEN)
-  
+const cohere = new CohereClient({
+  token: process.env.COHERE_API_KEY,
+})
 app.get(`/`, (req, res) => {
   res.status(200).send("Hello World");
 });
 app.get(`/webhook`, (req, res) => {
-  console.log(req.query);
-  let VERIFY_TOKEN = "SaiRam123";
+  let VERIFY_TOKEN = process.env.VERIFY_TOKEN;
   let mode = req.query["hub.mode"];
   let token = req.query["hub.verify_token"];
   let challenge = req.query["hub.challenge"];
@@ -29,9 +42,7 @@ app.get(`/webhook`, (req, res) => {
 });
 
 app.post(`/webhook`, (req, res) => {
-  console.log(req.body);
   let body = req.body;
-
   if (body.object === "page") {
     body.entry.forEach(async function (entry) {
       let webhook_event = entry.messaging[0];
@@ -47,13 +58,26 @@ app.post(`/webhook`, (req, res) => {
   }
 });
 
+
+async function getReply(message){
+  try{
+    const response = await cohere.chat({
+      model: "command-r",
+      message: message,
+      documents: documents
+    })
+    return response;
+  } catch (err){
+    console.log("Error: ", err);
+  }
+
+}
+
 async function handleMessage(sender_psid, received_message) {
   let response;
 
   if (received_message.text) {
-    response = {
-      text: `You sent: "${received_message.text}". Thanks for reaching out!`,
-    };
+    response = await getReply(received_message.text)
   }
 
   await callSendAPI(sender_psid, response);
