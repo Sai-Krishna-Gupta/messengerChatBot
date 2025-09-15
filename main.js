@@ -73,7 +73,7 @@ async function getReply(message) {
       message: message,
       documents: documents,
     });
-    return response.text;
+    return response;
   } catch (err) {
     console.log("Error: ", err);
   }
