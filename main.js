@@ -42,7 +42,6 @@ app.get(`/webhook`, (req, res) => {
   let challenge = req.query["hub.challenge"];
   if (mode && token) {
     if (mode === "subscribe" && token === VERIFY_TOKEN) {
-      console.log("Webhook Verified");
       res.status(200).send(challenge);
     } else {
       res.sendStatus(403);
@@ -84,7 +83,9 @@ async function handleMessage(sender_psid, received_message) {
   let response;
 
   if (received_message.text) {
-    response = await getReply(received_message.text);
+    const reply = await getReply(received_message.text);
+    console.log(reply);
+    response = "Hello";
   }
 
   await callSendAPI(sender_psid, response);
