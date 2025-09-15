@@ -2,27 +2,36 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const { CohereClient } = require("cohere-ai");
 const dotenv = require("dotenv");
+const { get } = require("request");
 const app = express();
 app.use(bodyParser.json());
 app.set("port", process.env.PORT || 3000);
 dotenv.config();
 const documents = [
-  {title: "Menu", snippet: JSON.stringify([
-    {item: "Veggie Mash Burger"},
-    {item: "Paneer Zinger Burger"},
-    {item: "Creamy grilled Sandwich"},
-    {item: "Coleslaw Sandwich"},
-    {item: "Quesadillas"},
-    {item: "Stuffed Kulcha"},
-    {item: "Desi Pancakes"}
-  ])},
-  {title: "Location", snippet: "Cobbs Pond Rotary Park"},
-  {title: "Hours", snippet: "10AM-2PM on September 27"}
-]
+  {
+    title: "Menu",
+    snippet: JSON.stringify([
+      { item: "Veggie Mash Burger" },
+      { item: "Paneer Zinger Burger" },
+      { item: "Creamy grilled Sandwich" },
+      { item: "Coleslaw Sandwich" },
+      { item: "Quesadillas" },
+      { item: "Stuffed Kulcha" },
+      { item: "Desi Pancakes" },
+    ]),
+  },
+  { title: "Location", snippet: "100 Sullivan Avenue Gander" },
+  { title: "Hours", snippet: "Variable" },
+  {
+    title: "Overview",
+    snippet:
+      "We are opening a cloud kitchen from home and do not have any fixed time right now. We are going to be focusing on ind-mexican fusion. The message sent to is form a customer and he wants to chat regarding placing an order, etc. Help accordingly. Make it humanized too.",
+  },
+];
 const PAGE_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN;
 const cohere = new CohereClient({
   token: process.env.COHERE_API_KEY,
-})
+});
 app.get(`/`, (req, res) => {
   res.status(200).send("Hello World");
 });
@@ -58,26 +67,24 @@ app.post(`/webhook`, (req, res) => {
   }
 });
 
-
-async function getReply(message){
-  try{
+async function getReply(message) {
+  try {
     const response = await cohere.chat({
       model: "command-r",
       message: message,
-      documents: documents
-    })
-    return response;
-  } catch (err){
+      documents: documents,
+    });
+    return response.text;
+  } catch (err) {
     console.log("Error: ", err);
   }
-
 }
 
 async function handleMessage(sender_psid, received_message) {
   let response;
 
   if (received_message.text) {
-    response = await getReply(received_message.text)
+    response = await getReply(received_message.text);
   }
 
   await callSendAPI(sender_psid, response);
