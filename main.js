@@ -83,7 +83,6 @@ async function handleMessage(sender_psid, received_message) {
   let response;
 
   if (received_message.text) {
-    console.log(received_message.text)
     const reply = await getReply(received_message.text);
     console.log(reply);
     response = "Hello";
